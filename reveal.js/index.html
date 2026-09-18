@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<title>Tipos de Hackers - Hacktivistas</title>
+
+	<link rel="stylesheet" href="dist/reset.css" />
+	<link rel="stylesheet" href="dist/reveal.css" />
+	<link rel="stylesheet" href="dist/theme/black.css" id="theme" />
+	<link rel="stylesheet" href="dist/plugin/highlight/monokai.css" />
+	
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+	<style>
+		/* 3. Puntero Hackeado */
+		body, .reveal {
+			cursor: crosshair !important;
+		}
+		button, a {
+			cursor: cell !important;
+		}
+
+		:root {
+			--r-main-color: #e0e0e0;
+			--r-heading-color: #00ffcc;
+			--r-link-color: #00ffcc;
+			--r-link-color-hover: #ffffff;
+			--r-selection-background-color: #00ffcc;
+			--r-background-color: #080a0e;
+		}
+		
+		body {
+			background-image: radial-gradient(circle at center, #111b24 0%, #050505 100%);
+			margin: 0;
+			padding: 0;
+		}
+		
+		#matrix {
+			opacity: 0;
+			transition: opacity 1.5s ease-in-out;
+		}
+		body.matrix-bg #matrix {
+			opacity: 0.2;
+		}
+
+		.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+			color: var(--r-heading-color);
+			text-transform: uppercase;
+			font-family: 'Courier New', Courier, monospace;
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-shadow: 0 0 5px rgba(0, 255, 204, 0.3);
+			margin-bottom: 15px;
+		}
+		
+		.reveal h3 { font-size: 1.4em; }
+		.reveal .unab-accent { color: #00ffcc; }
+		
+		@keyframes neon-pulse {
+			0% { text-shadow: 0 0 3px rgba(0,255,204,0.4); }
+			50% { text-shadow: 0 0 8px rgba(0,255,204,0.6); }
+			100% { text-shadow: 0 0 3px rgba(0,255,204,0.4); }
+		}
+		.neon-title { animation: neon-pulse 3s infinite; }
+		.icon-pulse { animation: neon-pulse 2s infinite; }
+
+		@keyframes safe-glitch {
+			0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+			14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+			15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+			49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+			50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+			99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+			100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
+		}
+
+		.glitch {
+			animation: safe-glitch 1s infinite alternate-reverse;
+			display: inline-block;
+			position: relative;
+			margin: 0;
+		}
+
+		.portada .logos { display: flex; justify-content: center; gap: 40px; align-items: center; margin-bottom: 20px; }
+		.portada .logos img { margin: 0; box-shadow: none; border: none; filter: drop-shadow(0 0 3px rgba(255,255,255,0.1)); }
+		
+		.portada hr { border-top: 1px solid rgba(0,255,204,0.5); width: 60%; margin: 15px auto; box-shadow: 0 0 3px rgba(0,255,204,0.3); }
+		
+		.portada .info { font-size: 0.5em; text-align: center; margin-top: 15px; font-family: monospace; }
+		.portada .info div { margin-bottom: 8px; }
+		.portada .footer-date { font-size: 0.4em; margin-top: 25px; color: #888; font-family: monospace; }
+
+		.hacker-block { 
+			border: 1px solid rgba(0,255,204,0.4); 
+			border-radius: 4px; 
+			padding: 12px 20px; 
+			margin: 10px auto; 
+			width: 95%; 
+			background-color: rgba(0, 255, 204, 0.03); 
+			box-shadow: inset 0 0 5px rgba(0,255,204,0.05);
+			text-align: left;
+			box-sizing: border-box;
+		}
+		.hacker-block.center { text-align: center; }
+		
+		.column-container { display: flex; justify-content: space-between; width: 100%; gap: 15px; }
+		.col { flex: 1; }
+		
+		.reveal ul { list-style-type: none; margin-left: 0; padding-left: 0; margin-top: 5px; }
+		.reveal ul li { margin-bottom: 8px; line-height: 1.2; }
+		.reveal ul li::before { content: ">"; font-family: monospace; font-weight: 900; color: #00ffcc; display: inline-block; width: 1.2em; }
+		
+		@keyframes blink-caret { from, to { opacity: 1 } 50% { opacity: 0; } }
+		.cursor-blink { animation: blink-caret 1s step-end infinite; display: inline-block; width: 8px; height: 1em; background-color: #00ffcc; vertical-align: middle; margin-left: 2px;}
+
+		.terminal-box {
+			background-color: #000;
+			border: 1px solid #444;
+			border-radius: 6px;
+			padding: 15px;
+			font-family: 'Courier New', Courier, monospace;
+			text-align: left;
+			font-size: 0.65em;
+			box-shadow: 0 5px 20px rgba(0,255,204,0.1), inset 0 0 5px rgba(0,0,0,1);
+			margin: 20px auto;
+			width: 85%;
+			color: #fff;
+		}
+		.terminal-header {
+			background: #1a1a1a;
+			margin: -15px -15px 15px -15px;
+			padding: 8px 15px;
+			border-radius: 6px 6px 0 0;
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			border-bottom: 1px solid #333;
+		}
+		.dot { width: 12px; height: 12px; border-radius: 50%; }
+		.dot.red { background: #ff5f56; }
+		.dot.yellow { background: #ffbd2e; }
+		.dot.green { background: #27c93f; }
+		.terminal-title { color: #888; font-size: 0.9em; margin-left: auto; margin-right: auto; }
+		
+		.t-success { color: #27c93f; }
+		.t-prompt { color: #00ffcc; }
+		.t-user { color: #ff5f56; }
+
+		/* 4. Radar de red CSS */
+		.radar {
+			position: absolute;
+			width: 150px;
+			height: 150px;
+			border-radius: 50%;
+			border: 1px solid rgba(0, 255, 204, 0.4);
+			overflow: hidden;
+			z-index: -1;
+			opacity: 0.6;
+		}
+		.radar::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 75px;
+			height: 75px;
+			background: linear-gradient(45deg, rgba(0,255,204,0.8) 0%, transparent 60%);
+			transform-origin: 0% 0%;
+			animation: scan 2.5s linear infinite;
+		}
+		.radar::after {
+			content: '';
+			position: absolute;
+			top: 0; left: 0; right: 0; bottom: 0;
+			border-radius: 50%;
+			background: radial-gradient(circle, transparent 40%, rgba(0,255,204,0.15) 100%);
+			box-shadow: 0 0 10px rgba(0,255,204,0.3);
+		}
+		@keyframes scan {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+
+		/* 5. Autodestrucción TV Off */
+		@keyframes tv-off {
+			0% { transform: scale(1, 1); filter: brightness(1); }
+			40% { transform: scale(1, 0.005); filter: brightness(3); }
+			80% { transform: scale(0, 0.005); filter: brightness(5); opacity: 1; }
+			100% { transform: scale(0, 0); opacity: 0; }
+		}
+		.shutdown {
+			animation: tv-off 0.8s cubic-bezier(0.25, 0.1, 0.25, 1) forwards !important;
+			pointer-events: none;
+		}
+	</style>
+</head>
+<body>
+
+	<!-- 1. Pantalla Inicial de "Acceso Restringido" -->
+	<div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #050505; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; font-family: monospace;">
+		<h2 style="color: #ff3333; font-size: 2.5em; text-shadow: 0 0 15px #ff3333; letter-spacing: 2px;">[ ACCESO RESTRINGIDO ]</h2>
+		<p style="color: #00ffcc; margin-top: 15px; font-size: 1.2em;">Terminal central UNAB - Nivel de autorización: Sala 6</p>
+		<div style="margin-top: 40px; border: 1px solid #333; padding: 25px; width: 500px; background: rgba(0,255,204,0.02); box-shadow: 0 0 20px rgba(0,0,0,0.8);">
+			<div style="color: #888; margin-bottom: 15px; font-size: 0.9em;">> Ingrese código de desencriptación:</div>
+			<div style="display: flex; align-items: center; border-bottom: 1px solid #444; padding-bottom: 5px;">
+				<span style="color: #00ffcc; margin-right: 15px; font-weight: bold;">root@sala6:~#</span>
+				<input type="password" id="fake-password" style="background: transparent; border: none; outline: none; color: #fff; font-family: monospace; font-size: 1.5em; width: 100%; letter-spacing: 5px;" autocomplete="off" autofocus>
+			</div>
+			<div id="login-msg" style="color: #ff3333; margin-top: 20px; height: 25px; font-weight: bold; font-size: 1.1em;"></div>
+		</div>
+	</div>
+
+	<!-- Canvas Matrix -->
+	<canvas id="matrix" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;"></canvas>
+	
+	<!-- EL OVERLAY SE MOVIÓ AL REPOSITORIO GITHUB PAGES -->
+
+	<div class="reveal">
+		
+		<!-- Identificador Global de Expositor -->
+		<div id="global-speaker-badge" style="position: absolute; bottom: 20px; left: 20px; z-index: 1000; font-size: 0.6em; color: rgba(255,255,255,0.7); font-family: 'Share Tech Mono', monospace; padding: 5px 15px; display: none; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 5px black;">
+			<i class="fas fa-microphone" style="color: #00ffcc; margin-right: 8px;"></i> <span id="speaker-name-text"></span>
+		</div>
+
+		<div class="slides">
+			
+			<!-- LÁMINA 1: PORTADA -->
+			<section class="portada" data-state="matrix-bg">
+				<div class="logos" style="margin-bottom: 5px;">
+					<img src="img/isotipo-unab-blanco.png" alt="Logo UNAB Blanco" style="height: 90px;">
+				</div>
+				
+				<h2 id="titulo" class="glitch" style="margin-top: 5px; margin-bottom: 0; font-size: 2.2em; text-shadow: 0 0 10px #00ffcc;">TIPOS DE HACKERS</h2>
+				<h4 id="subtitulo" style="margin-top: 5px; color: #fff; letter-spacing: 5px;"><span class="unab-accent">[</span> Hacktivistas <span class="unab-accent">]</span></h4>
+				
+				<div class="hacker-block" style="width: 85%; margin: 25px auto; padding: 15px 25px; font-size: 0.55em; text-align: left; background: rgba(0,0,0,0.6); border-left: 3px solid #00ffcc; border-right: 3px solid #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.1);">
+					<div style="text-align: center; border-bottom: 1px dashed #444; padding-bottom: 12px; margin-bottom: 15px;">
+						<div style="margin-bottom: 6px;">
+							<strong style="color: #00ffcc;"><i class="fas fa-network-wired"></i> ASIGNATURA:</strong> 
+							<span style="color: #ddd;">Diseño de Sistemas de Seguridad de Redes de Datos</span>
+						</div>
+						<div>
+							<strong style="color: #00ffcc;"><i class="fas fa-user-secret"></i> DOCENTE:</strong> 
+							<span style="color: #ddd;">Ing. MDUEV. Franklin Geovany Buruca Hernandez</span>
+						</div>
+					</div>
+					
+					<div style="text-align: center; margin-top: 10px;">
+						<strong style="color: #00ffcc; font-size: 1.1em; letter-spacing: 2px;"><i class="fas fa-users"></i> EQUIPO (SALA 6)</strong>
+						<div style="display: flex; justify-content: center; gap: 40px; margin-top: 15px; color: #fff; font-size: 1.1em;">
+							<span><i class="fas fa-terminal" style="color:#555; margin-right: 5px;"></i> Genesis Saravia</span>
+							<span><i class="fas fa-terminal" style="color:#555; margin-right: 5px;"></i> Jaime Berrios</span>
+							<span><i class="fas fa-terminal" style="color:#555; margin-right: 5px;"></i> Tatiana Nolasco</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="footer-date" style="font-size: 0.45em; color: #666; margin-top: 15px;">
+					<i class="fas fa-map-marker-alt unab-accent"></i> San Miguel, 21 y 23 de septiembre de 2026
+				</div>
+			</section>
+
+			<!-- LÁMINA 2: REFLEXIÓN -->
+			<section data-speaker="Génesis Saravia">
+				<h3><i class="fas fa-user-secret icon-pulse"></i> Hacktivismo:<br>¿Delito o Protesta?</h3>
+				<div class="hacker-block center" style="margin-top: 20px; border-color: rgba(255,51,51,0.5); box-shadow: inset 0 0 10px rgba(255,51,51,0.1);">
+					<i class="fas fa-exclamation-triangle fa-2x" style="color: #ff3333; margin-bottom: 10px;"></i>
+					<p style="font-family: monospace; font-size: 1.1em; color: #fff; margin: 10px 0;">"El teclado es más fuerte que la espada."<span class="cursor-blink"></span></p>
+					<p style="margin-top: 15px; color: #ddd; font-size: 0.8em; line-height: 1.3;">¿Qué sucede cuando la tecnología se convierte en el arma principal de la protesta social?</p>
+				</div>
+			</section>
+
+			<!-- LÁMINA 3: CONCEPTOS (Texto Cifrado en Palabras Clave) -->
+			<section data-speaker="Génesis Saravia">
+				<h3><i class="fas fa-info-circle unab-accent"></i> Definición y Motivaciones</h3>
+				
+				<div class="hacker-block" style="padding: 10px 15px; font-size: 0.85em; text-align: center;">
+					<strong class="unab-accent">¿Qué es el Hacktivismo?</strong><br>
+					<span style="font-size: 0.9em; color: #ccc;">Uso no violento de <span style="color: #00ffcc;">herramientas digitales</span> (ilegales o ambiguas) para fines políticos, sociales o <span style="color: #00ffcc;">ideológicos</span>.</span>
+				</div>
+				
+				<div class="column-container" style="font-size: 0.6em; margin-top: 10px;">
+					<div class="col">
+						<div class="hacker-block" style="padding: 10px; height: 100%;">
+							<ul>
+								<li><i class="fas fa-fist-raised unab-accent"></i> <strong style="color: #fff;">Motivación:</strong> Ideología, <strong style="color: #fff;">cambio social</strong>, DD.HH.</li>
+								<li><i class="fas fa-balance-scale unab-accent"></i> <strong style="color: #fff;">Diferencia clave:</strong> No buscan lucro (Negro) ni <span class="decrypt-target" data-text="auditar seguridad" style="color: #00ffcc; font-weight: bold;"></span> (Blanco).</li>
+							</ul>
+						</div>
+					</div>
+					<div class="col">
+						<div class="hacker-block" style="padding: 10px; height: 100%;">
+							<ul>
+								<li><i class="fas fa-network-wired unab-accent"></i> <strong style="color: #fff;">Métodos comunes:</strong> <span style="color: #00ffcc;">DDoS</span>, Defacement, <span style="color: #00ffcc;">Filtraciones</span>.</li>
+								<li><i class="fas fa-mask unab-accent"></i> <strong style="color: #fff;">Identidad:</strong> Redes descentralizadas y <span class="decrypt-target" data-text="anonimato" style="color: #00ffcc; font-weight: bold;"></span>.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- LÁMINA 4: ANONYMOUS -->
+			<section data-speaker="Tatiana Nolasco">
+				<h3><i class="fas fa-user-ninja unab-accent"></i> Caso 1: Anonymous</h3>
+				<div class="hacker-block center" style="padding: 10px; font-size: 0.7em;">
+					<strong class="unab-accent">El Colectivo Descentralizado:</strong> Grupo sin líderes formales, surgido en 4chan. Símbolo: Máscara de Guy Fawkes.
+				</div>
+				<div class="column-container" style="font-size: 0.55em; margin-top: 10px;">
+					<div class="col">
+						<div class="hacker-block" style="border-color: #555; height: 100%;">
+							<strong style="color: #fff; font-size: 1.2em;">Operación Chanology (2008)</strong>
+							<hr style="border-color: #333; margin: 5px 0;">
+							<p class="auto-type" style="margin: 5px 0;"><strong class="unab-accent">Objetivo:</strong> Iglesia de la Cienciología.</p>
+							<p class="auto-type" style="margin: 5px 0;"><strong class="unab-accent">Acción:</strong> Ataques DDoS y filtración de documentos en protesta por la censura en internet.</p>
+						</div>
+					</div>
+					<div class="col">
+						<div class="hacker-block" style="border-color: #555; height: 100%;">
+							<strong style="color: #fff; font-size: 1.2em;">Impacto</strong>
+							<hr style="border-color: #333; margin: 5px 0;">
+							<ul class="auto-type">
+								<li>Popularizó el uso del DDoS como protesta masiva.</li>
+								<li>Demostró la fuerza de la afiliación libre y voluntaria (enjambre).</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- LÁMINA 5: WIKILEAKS -->
+			<section data-speaker="Tatiana Nolasco">
+				<h3><i class="fas fa-globe unab-accent"></i> Caso 2: WikiLeaks</h3>
+				<div class="hacker-block center" style="padding: 10px; font-size: 0.7em;">
+					<strong class="unab-accent">La Transparencia Radical:</strong> Organización para publicar informes anónimos y documentos clasificados.
+				</div>
+				<div class="column-container" style="font-size: 0.55em; margin-top: 10px;">
+					<div class="col">
+						<div class="hacker-block" style="border-color: #555; height: 100%;">
+							<strong style="color: #fff; font-size: 1.2em;">Cablegate (2010)</strong>
+							<hr style="border-color: #333; margin: 5px 0;">
+							<p class="auto-type" style="margin: 5px 0;"><strong class="unab-accent">Objetivo:</strong> Gobiernos mundiales (EE.UU. principalmente).</p>
+							<p class="auto-type" style="margin: 5px 0;"><strong class="unab-accent">Acción:</strong> Filtración masiva de cientos de miles de cables diplomáticos.</p>
+						</div>
+					</div>
+					<div class="col">
+						<div class="hacker-block" style="border-color: #555; height: 100%;">
+							<strong style="color: #fff; font-size: 1.2em;">Impacto</strong>
+							<hr style="border-color: #333; margin: 5px 0;">
+							<ul class="auto-type">
+								<li>Alteró por completo la diplomacia global.</li>
+								<li>Desató el debate ético sobre la seguridad de estado vs. libertad de prensa.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- LÁMINA 6: DEFENSA Y SIMULACIÓN -->
+			<!-- LÁMINA 6: CÓMO AFECTAN A LA SEGURIDAD Y DEFENSA -->
+			<section data-auto-animate data-speaker="Jaime Berrios">
+				<h3 style="margin-bottom: 5px;"><i class="fas fa-shield-virus unab-accent"></i> Impacto y Defensa</h3>
+				
+				<div class="column-container" style="font-size: 0.55em;">
+					<div class="col" style="border-right: 1px solid #333; padding-right: 15px;">
+						<strong class="unab-accent">Impacto del Ataque</strong>
+						<ul style="margin-top: 10px;">
+							<li><strong style="color: #fff;">Reputacional:</strong> Pérdida de confianza pública por defacement.</li>
+							<li><strong style="color: #fff;">Operativo:</strong> Caída de servicios críticos por botnets.</li>
+							<li><strong style="color: #fff;">Financiero:</strong> Costos de mitigación y recuperación de datos.</li>
+						</ul>
+					</div>
+					<div class="col" style="padding-left: 15px;">
+						<strong class="unab-accent">Medidas de Defensa</strong>
+						<ul style="margin-top: 10px;">
+							<li><strong style="color: #00ffcc;">Mitigación DDoS:</strong> Firewalls en la nube (ej. Cloudflare).</li>
+							<li><strong style="color: #00ffcc;">Zero Trust:</strong> No confiar en nadie, verificar siempre.</li>
+							<li><strong style="color: #00ffcc;">Monitoreo SOC:</strong> Alertas tempranas de tráfico inusual.</li>
+						</ul>
+					</div>
+				</div>
+				<!-- El botón se eliminó para dejar solo una dinámica -->
+			</section>
+
+			<!-- LÁMINA 7: DINÁMICAS (PLAN A Y PLAN B) -->
+			<section data-transition="slide" data-speaker="Jaime Berrios">
+				<!-- PLAN A: SIMULADOR DDOS (Arriba) -->
+				<section data-transition="slide" data-speaker="Jaime Berrios">
+					<h2 class="glitch" style="font-size: 1.8em; color: #ff003c; text-shadow: 0 0 15px rgba(255,0,60,0.8); margin-bottom: 15px;">
+						<i class="fas fa-satellite-dish fa-spin" style="animation-duration: 4s;"></i> ENJAMBRE BOTNET DDOS
+					</h2>
+					<p style="font-size: 0.8em; color: #ccc; margin-bottom: 15px;">Escanea el código para conectarte a la red:</p>
+					
+					<!-- QR Tamaño Equilibrado -->
+					<div style="display: inline-block; padding: 15px; background: rgba(0, 255, 204, 0.1); border: 3px solid #00ffcc; border-radius: 15px; box-shadow: 0 0 20px rgba(0, 255, 204, 0.4); margin-bottom: 20px;">
+						<img src="img/qr-code.png" alt="QR Dinámica" style="width: 250px; border-radius: 10px; background: #000; display: block; margin: 0 auto;">
+					</div>
+					
+					<br>
+					<!-- Enlace -->
+					<div class="hacker-block" style="padding: 10px 30px; display: inline-block; white-space: nowrap; border-color: #ff003c; background: rgba(255,0,60,0.1);">
+						<a href="https://jaimeberrios.github.io/Hacktivistas-UNAB/" target="_blank" style="color: #ff003c; font-size: 1em; text-decoration: none; font-weight: bold; letter-spacing: 2px;">
+							<i class="fas fa-external-link-alt"></i> jaimeberrios.github.io/Hacktivistas-UNAB
+						</a>
+					</div>
+				</section>
+
+				<!-- PLAN B: EL DEBATE DEL SOMBRERO GRIS (Abajo) -->
+				<section data-speaker="Jaime Berrios">
+					<!-- 4. Escáner Radar -->
+					<div class="radar" style="top: 20%; left: 10%;"></div>
+					<div class="radar" style="top: 80%; left: 90%; width: 100px; height: 100px; animation-duration: 1.5s;"></div>
+					
+					<h3><i class="fas fa-users-cog unab-accent"></i> Dinámica de Reserva</h3>
+					<div class="hacker-block center" style="padding: 10px; margin-top: 10px;">
+						<strong style="color: #fff; font-size: 1.1em;">El Debate del Sombrero Gris</strong><br>
+						<span style="color: #aaa; font-size: 0.8em; line-height: 1.2; display: inline-block; margin-top: 5px;">Descubres una vulnerabilidad en una app universitaria que expone datos privados de todos.</span>
+						<br>
+						<strong class="unab-accent" style="font-size: 1.1em; display: inline-block; margin-top: 10px;">¿QUÉ HACES?</strong>
+					</div>
+					<div class="column-container" style="font-size: 0.55em; margin-top: 15px;">
+						<div class="col">
+							<div class="hacker-block center" style="border-color: #aaaaaa; color: #fff; height: 100%;">
+								<i class="fas fa-building fa-2x" style="margin-bottom: 5px;"></i><br>
+								<strong>Opción A (Legal)</strong><br>
+								<span style="color: #aaa;">Avisas en privado a la U y esperas meses a que lo arreglen (nadie se entera).</span>
+							</div>
+						</div>
+						<div class="col">
+							<div class="hacker-block center" style="color: #fff; height: 100%;">
+								<i class="fas fa-broadcast-tower fa-2x unab-accent" style="margin-bottom: 5px;"></i><br>
+								<strong class="unab-accent">Opción B (Hacktivista)</strong><br>
+								<span style="color: #aaa;">Lo publicas en internet para obligarlos a solucionarlo de inmediato.</span>
+							</div>
+						</div>
+					</div>
+				</section>
+			</section>
+
+
+			<!-- LÁMINA 8: CONCLUSIÓN -->
+			<section data-speaker="Jaime Berrios">
+				<h3><i class="fas fa-flag-checkered unab-accent"></i> Conclusión</h3>
+				<div class="hacker-block center" style="margin-top: 20px; padding: 20px;">
+					<strong class="unab-accent" style="font-size: 1.2em;">El Arma de Doble Filo</strong>
+					<p style="color: #ccc; font-size: 0.85em; margin-top: 10px; line-height: 1.4;">El hacktivismo expone verdades y defiende derechos, pero lo hace rompiendo la ley y amenazando la estabilidad digital.</p>
+				</div>
+				<p style="font-size: 0.7em; text-align: center; color: #fff; margin-top: 30px; line-height: 1.4;">
+					Las organizaciones modernas no solo deben protegerse de quien busca dinero,<br>sino de quien busca <strong class="unab-accent" style="font-size: 1.2em; text-transform: uppercase;">un mensaje</strong>.
+				</p>
+			</section>
+
+			<!-- LÁMINA 9: CIERRE TERMINAL -->
+			<section data-speaker="Jaime Berrios" class="portada" data-state="matrix-bg">
+				<h2 class="unab-accent" style="margin-bottom: 10px; font-size: 1.2em;">
+					<i class="fas fa-skull-crossbones"></i> 
+					<span class="glitch">FIN DE LA TRANSMISIÓN</span>
+				</h2>
+				
+				<div class="terminal-box" id="final-terminal">
+					<div class="terminal-header">
+						<div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+						<div class="terminal-title">bash -- 80x24</div>
+					</div>
+					<p style="margin: 5px 0;"><span class="t-success">[ OK ]</span> Iniciando subsistema de preguntas...</p>
+					<p style="margin: 5px 0;"><span class="t-success">[ OK ]</span> Enrutando consultas a Sala 6...</p>
+					<p style="margin: 5px 0;"><span class="t-success">[ OK ]</span> Conexión segura establecida.</p>
+					<br>
+					<p style="margin: 5px 0;"><span class="t-user">root@unab-sala6</span>:<span class="t-prompt">~</span># ./preguntas_y_dudas.sh</p>
+					<p style="margin: 5px 0; color: #aaa;">> Analizando vulnerabilidades en la exposición...</p>
+					<p style="margin: 5px 0; font-size: 1.1em; color: #fff;" id="final-prompt">
+						<span class="t-user">root@unab-sala6</span>:<span class="t-prompt">~/preguntas</span># Escriba su duda aquí<span class="cursor-blink"></span>
+					</p>
+				</div>
+				
+				<p style="font-size: 0.4em; color: #555; margin-top: 30px; font-family: monospace;">Facultad de Tecnología e Innovación &middot; Universidad Dr. Andrés Bello</p>
+
+				<!-- El botón autodestrucción se eliminó para dejar solo una dinámica -->
+			</section>
+
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="dist/plugin/notes.js"></script>
+	<script src="dist/plugin/markdown.js"></script>
+	<script src="dist/plugin/highlight.js"></script>
+	
+	<!-- FIREBASE COMPAT (Permite funcionar sin servidor web local, directo dando doble clic al HTML) -->
+	<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
+	<script>
+		try {
+			// === FIREBASE CONFIGURACIÓN PARA DINÁMICA DDOS ===
+			const firebaseConfig = {
+				apiKey: "AIzaSyA3BoGINgeyXyGA1-i3CQ4wPv-8CiO-vcc",
+				authDomain: "hacktivismo-unab.firebaseapp.com",
+				databaseURL: "https://hacktivismo-unab-default-rtdb.firebaseio.com",
+				projectId: "hacktivismo-unab",
+				storageBucket: "hacktivismo-unab.firebasestorage.app",
+				messagingSenderId: "732824442398",
+				appId: "1:732824442398:web:6df002d822207318d7c00f"
+			};
+			firebase.initializeApp(firebaseConfig);
+			const db = firebase.database();
+			const maxHp = 500;
+			// ==================================================
+
+			// 1. Lógica Pantalla Login
+			const loginInput = document.getElementById('fake-password');
+			const loginOverlay = document.getElementById('login-overlay');
+			const loginMsg = document.getElementById('login-msg');
+			
+			loginInput.addEventListener('keypress', function(e) {
+				if(e.key === 'Enter' && loginInput.value.trim().length > 0) {
+					loginInput.disabled = true;
+					loginMsg.style.color = '#27c93f';
+					loginMsg.innerText = '[ ACCESO CONCEDIDO ] Ingresando al mainframe...';
+					setTimeout(() => {
+						loginOverlay.style.opacity = '0';
+						loginOverlay.style.transition = 'opacity 1.5s ease-out';
+						setTimeout(() => loginOverlay.style.display = 'none', 1500);
+					}, 1000);
+				}
+			});
+			// Mantener foco en el input al hacer clic fuera
+			document.addEventListener('click', () => { 
+				if(loginOverlay.style.display !== 'none') loginInput.focus(); 
+			});
+
+			// 2. Matrix Rain Background
+			const canvas = document.getElementById('matrix');
+			const ctx = canvas.getContext('2d');
+			function resizeMatrix() {
+				canvas.width = window.innerWidth;
+				canvas.height = window.innerHeight;
+			}
+			window.addEventListener('resize', resizeMatrix);
+			resizeMatrix();
+			
+			const matrixChars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*'.split('');
+			const fontSize = 16;
+			const columns = Math.floor(window.innerWidth / fontSize);
+			const drops = [];
+			for(let x = 0; x < columns; x++) drops[x] = Math.random() * 100;
+			
+			function drawMatrix() {
+				ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				ctx.fillStyle = '#00ffcc';
+				ctx.font = fontSize + 'px monospace';
+				for(let i = 0; i < drops.length; i++) {
+					const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+					ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+					if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+					drops[i]++;
+				}
+			}
+			setInterval(drawMatrix, 50);
+
+			// Se eliminó la lógica de los botones antiguos para dejar solo la dinámica de GitHub Pages
+
+			// 5. Preparar Efecto Typewriter (Escritura en vivo)
+			const typeElements = document.querySelectorAll('.auto-type');
+			typeElements.forEach(el => {
+				let originalHTML = el.innerHTML;
+				el.dataset.original = originalHTML;
+				el.innerHTML = ''; // Vaciar
+			});
+			
+			// 6. Preparar Textos Cifrados (Vaciarlos inicialmente)
+			const decryptElements = document.querySelectorAll('.decrypt-target');
+			decryptElements.forEach(el => { el.innerText = ''; });
+
+		} catch(e) {
+			console.error("Error setting up JS effects:", e);
+		}
+
+		// Identificador de Expositor Dinámico
+		function updateSpeakerBadge(event) {
+			let speaker = event.currentSlide.getAttribute('data-speaker');
+			let badge = document.getElementById('global-speaker-badge');
+			let nameText = document.getElementById('speaker-name-text');
+			if(speaker) {
+				nameText.innerText = speaker;
+				badge.style.display = 'block';
+			} else {
+				badge.style.display = 'none';
+			}
+		}
+		Reveal.on('ready', updateSpeakerBadge);
+		Reveal.on('slidechanged', updateSpeakerBadge);
+
+		// Inicializar Reveal
+		Reveal.initialize({
+			hash: true,
+			controls: true,
+			progress: true,
+			center: true,
+			width: 1100, // Lienzo amplio para evitar cortes
+			height: 750,
+			margin: 0.05,
+			transition: 'zoom',
+			backgroundTransition: 'fade',
+			plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+		});
+
+		try {
+			// Disparar animaciones al cambiar de lámina
+			Reveal.on('slidechanged', event => {
+				
+				// ----------------------------------------
+				// A) Escritura en Vivo (Typewriter)
+				// ----------------------------------------
+				let targets = event.currentSlide.querySelectorAll('.auto-type');
+				targets.forEach(el => {
+					if(el.dataset.done) return;
+					el.dataset.done = "true";
+					
+					let text = el.dataset.original;
+					if(!text) return;
+					el.innerHTML = '';
+					
+					let i = 0;
+					let isTag = false;
+					let currentHTML = '';
+					
+					let typeInterval = setInterval(() => {
+						if(i >= text.length) {
+							clearInterval(typeInterval);
+							el.innerHTML = currentHTML;
+							return;
+						}
+						
+						currentHTML += text.charAt(i);
+						if(text.charAt(i) === '<') isTag = true;
+						if(text.charAt(i) === '>') isTag = false;
+						
+						if(!isTag) {
+							el.innerHTML = currentHTML + '<span style="border-right: 3px solid #00ffcc; animation: blink-caret 0.5s infinite; margin-left: 2px;"></span>';
+						}
+						i++;
+					}, 35); // Velocidad realista
+				});
+				
+				// ----------------------------------------
+				// B) Texto que se descifra (Decrypt Lento y Aleatorio)
+				// ----------------------------------------
+				const decryptLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+				let decryptTargets = event.currentSlide.querySelectorAll('.decrypt-target');
+				decryptTargets.forEach(el => {
+					if(el.dataset.done) return;
+					el.dataset.done = "true";
+					
+					let finalStr = el.getAttribute('data-text');
+					let locked = new Array(finalStr.length).fill(false);
+					
+					// Los espacios ya nacen "resueltos"
+					for(let j=0; j<finalStr.length; j++) {
+						if(finalStr[j] === ' ') locked[j] = true;
+					}
+					
+					// Mostramos pura basura inicial al cargar la lámina
+					let initialStr = finalStr.split('').map((c, i) => locked[i] ? ' ' : decryptLetters[Math.floor(Math.random() * decryptLetters.length)]).join('');
+					el.innerText = initialStr;
+
+					let iterations = 0;
+					let maxIterations = 100; // 100 frames * 150ms = 15 segundos totales
+					
+					// Esperamos 3 segundos mientras el presentador empieza a hablar antes de descifrar
+					setTimeout(() => {
+						let decryptInterval = setInterval(() => {
+							iterations++;
+							let progress = iterations / maxIterations;
+							
+							// Posibilidad MUY BAJA de que una letra se "resuelva" y se quede fija
+							for(let j=0; j<finalStr.length; j++) {
+								if(!locked[j] && Math.random() < progress * 0.05) {
+									locked[j] = true;
+								}
+							}
+							
+							if(iterations >= maxIterations) {
+								for(let j=0; j<finalStr.length; j++) locked[j] = true;
+							}
+							
+							let randomStr = finalStr.split('').map((char, index) => {
+								if(locked[index]) return finalStr[index];
+								return decryptLetters[Math.floor(Math.random() * decryptLetters.length)];
+							}).join('');
+							
+							el.innerText = randomStr;
+							
+							if(iterations >= maxIterations) {
+								clearInterval(decryptInterval);
+								el.innerText = finalStr;
+							}
+						}, 150); // 150ms entre cada cambio de letra (extremadamente lento)
+					}, 3000); // 3 segundos enteros de retraso antes de empezar
+				});
+				
+			});
+		} catch(e) {
+			console.error("Error en SlideChanged:", e);
+		}
+	</script>
+</body>
+</html>
