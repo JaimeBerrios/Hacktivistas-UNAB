@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado del Servidor UNAB</title>
+    <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            transition: background-color 0.5s;
+        }
+        .container {
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border: 4px solid white;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            z-index: 10;
+        }
+        h1 {
+            color: white;
+            font-size: 3.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px black;
+            letter-spacing: 5px;
+        }
+        h3 {
+            color: #00ffcc;
+            font-size: 1.5em;
+            margin: 0 0 20px 0;
+        }
+        .hp-container {
+            width: 100%;
+            height: 60px;
+            background: #333;
+            border: 3px solid white;
+            position: relative;
+        }
+        #server-hp-bar {
+            width: 100%;
+            height: 100%;
+            background: #27c93f;
+            transition: width 0.1s, background-color 0.3s;
+        }
+        #server-hp-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            line-height: 60px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2em;
+            text-shadow: 1px 1px 5px black;
+        }
+        #server-status-msg {
+            color: white;
+            margin-top: 30px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px black;
+            font-weight: bold;
+        }
+        .matrix-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; opacity: 0.15; pointer-events: none;
+        }
+        .btn-reset {
+            margin-top: 30px;
+            background: transparent;
+            border: 1px dashed #00ffcc;
+            color: #00ffcc;
+            padding: 10px 20px;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .btn-reset:hover { background: #00ffcc; color: black; }
+    </style>
+
+    <!-- Firebase SDKs Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="matrix-bg" id="matrix"></div>
+    
+    <h1 id="title-msg">¡ATAQUE DDOS DETECTADO!</h1>
+    
+    <div class="container">
+        <h3>ESTADO DEL SERVIDOR CENTRAL UNAB</h3>
+        
+        <div class="hp-container">
+            <div id="server-hp-bar"></div>
+            <div id="server-hp-text">HP: 500/500</div>
+        </div>
+    </div>
+    
+    <p id="server-status-msg">
+        <i class="fas fa-satellite-dish fa-spin"></i> Recibiendo paquetes de la Botnet...
+    </p>
+
+    <button class="btn-reset" onclick="resetServer()">Reinciar Servidor (Admin)</button>
+
+    <script>
+        // Matrix effect
+        const canvas = document.createElement('canvas');
+        document.getElementById('matrix').appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+        const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*'.split('');
+        const drops = Array(Math.floor(canvas.width / 20)).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff003c';
+            ctx.font = '15px Courier';
+            drops.forEach((y, i) => {
+                ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 20, y * 20);
+                if (y * 20 > canvas.height && Math.random() > 0.95) drops[i] = 0;
+                drops[i]++;
+            });
+        }, 50);
+
+        // Firebase Logic
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3BoGINgeyXyGA1-i3CQ4wPv-8CiO-vcc",
+            authDomain: "hacktivismo-unab.firebaseapp.com",
+            databaseURL: "https://hacktivismo-unab-default-rtdb.firebaseio.com",
+            projectId: "hacktivismo-unab",
+            storageBucket: "hacktivismo-unab.firebasestorage.app",
+            messagingSenderId: "732824442398",
+            appId: "1:732824442398:web:6df002d822207318d7c00f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const maxHp = 500;
+
+        const hpBar = document.getElementById('server-hp-bar');
+        const hpText = document.getElementById('server-hp-text');
+        const statusMsg = document.getElementById('server-status-msg');
+        const titleMsg = document.getElementById('title-msg');
+
+        // Reset
+        window.resetServer = function() {
+            db.ref('server/hp').set(maxHp);
+        };
+
+        // Escuchar salud en tiempo real
+        db.ref('server/hp').on('value', (snapshot) => {
+            const currentHp = snapshot.val() !== null ? snapshot.val() : maxHp;
+            
+            let percent = (currentHp / maxHp) * 100;
+            if(percent < 0) percent = 0;
+            
+            hpBar.style.width = percent + '%';
+            hpText.innerText = `HP: ${currentHp}/${maxHp}`;
+            
+            if(percent > 50) {
+                hpBar.style.backgroundColor = '#27c93f'; // Verde
+            } else if(percent > 20) {
+                hpBar.style.backgroundColor = '#ffaa00'; // Naranja
+            } else {
+                hpBar.style.backgroundColor = '#ff003c'; // Rojo
+            }
+            
+            if(currentHp <= 0) {
+                titleMsg.innerHTML = '❌ ERROR 500 ❌';
+                titleMsg.style.color = '#ff003c';
+                statusMsg.innerHTML = 'SISTEMA COLAPSADO POR DENEGACIÓN DE SERVICIO';
+                statusMsg.style.color = '#ff003c';
+                document.body.style.backgroundColor = '#1a0000';
+            } else {
+                titleMsg.innerHTML = '¡ATAQUE DDOS DETECTADO!';
+                titleMsg.style.color = 'white';
+                statusMsg.innerHTML = '<i class="fas fa-satellite-dish fa-spin"></i> Recibiendo paquetes de la Botnet...';
+                statusMsg.style.color = 'white';
+                document.body.style.backgroundColor = percent < 20 ? '#330000' : '#050505';
+            }
+        });
+    </script>
+</body>
+</html>
+

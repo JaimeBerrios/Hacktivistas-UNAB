@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola de Botnet</title>
+    <style>
+        body {
+            background-color: #050505;
+            color: #00ffcc;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        h1 { font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-attack {
+            background-color: #ff003c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 0 30px #ff003c;
+            cursor: pointer;
+            margin-top: 30px;
+            text-transform: uppercase;
+            transition: transform 0.1s;
+        }
+        .btn-attack:active {
+            transform: scale(0.9);
+            box-shadow: 0 0 50px #ff003c;
+        }
+        .status { margin-top: 20px; font-size: 0.9em; color: #555; }
+        .matrix-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.2; pointer-events: none;
+        }
+    </style>
+    <!-- Firebase SDKs Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3BoGINgeyXyGA1-i3CQ4wPv-8CiO-vcc",
+            authDomain: "hacktivismo-unab.firebaseapp.com",
+            databaseURL: "https://hacktivismo-unab-default-rtdb.firebaseio.com",
+            projectId: "hacktivismo-unab",
+            storageBucket: "hacktivismo-unab.firebasestorage.app",
+            messagingSenderId: "732824442398",
+            appId: "1:732824442398:web:6df002d822207318d7c00f"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        
+        const btn = document.getElementById('attackBtn');
+        const statusEl = document.getElementById('status');
+        let packetsSent = 0;
+
+        btn.addEventListener('click', () => {
+            // Vibra si está en celular
+            if(navigator.vibrate) navigator.vibrate(50);
+            
+            // Resta 5 puntos de vida por cada clic
+            const hpRef = db.ref('server/hp');
+            hpRef.transaction((currentHp) => {
+                if (currentHp === null) return 500; // Si no existe, inicia en 500
+                if (currentHp <= 0) return 0;
+                return currentHp - 5;
+            });
+            
+            packetsSent++;
+            statusEl.innerText = `Paquetes enviados: ${packetsSent}`;
+        });
+    </script>
+</head>
+<body>
+    <div class="matrix-bg" id="matrix"></div>
+    <h1>Enjambre Activo</h1>
+    <p style="font-size: 0.8em; color: #aaa;">Objetivo: Servidor Central UNAB</p>
+    
+    <button class="btn-attack" id="attackBtn">EJECUTAR<br>DDOS</button>
+    <div class="status" id="status">Esperando órdenes...</div>
+    
+    <script>
+        // Efecto Matrix simple
+        const canvas = document.createElement('canvas');
+        document.getElementById('matrix').appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const chars = '01'.split('');
+        const drops = Array(Math.floor(canvas.width / 20)).fill(1);
+        setInterval(() => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ff003c';
+            ctx.font = '15px Courier';
+            drops.forEach((y, i) => {
+                ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 20, y * 20);
+                if (y * 20 > canvas.height && Math.random() > 0.95) drops[i] = 0;
+                drops[i]++;
+            });
+        }, 50);
+    </script>
+</body>
+</html>
+
