@@ -63,24 +63,26 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
-        const btn = document.getElementById('attackBtn');
-        const statusEl = document.getElementById('status');
-        let packetsSent = 0;
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById('attackBtn');
+            const statusEl = document.getElementById('status');
+            let packetsSent = 0;
 
-        btn.addEventListener('click', () => {
-            // Vibra si está en celular
-            if(navigator.vibrate) navigator.vibrate(50);
-            
-            // Resta 5 puntos de vida por cada clic
-            const hpRef = db.ref('server/hp');
-            hpRef.transaction((currentHp) => {
-                if (currentHp === null) return 500; // Si no existe, inicia en 500
-                if (currentHp <= 0) return 0;
-                return currentHp - 5;
+            btn.addEventListener('click', () => {
+                // Vibra si está en celular
+                if(navigator.vibrate) navigator.vibrate(50);
+                
+                // Resta 5 puntos de vida por cada clic
+                const hpRef = db.ref('server/hp');
+                hpRef.transaction((currentHp) => {
+                    if (currentHp === null) return 500; // Si no existe, inicia en 500
+                    if (currentHp <= 0) return 0;
+                    return currentHp - 5;
+                });
+                
+                packetsSent++;
+                statusEl.innerText = `Paquetes enviados: ${packetsSent}`;
             });
-            
-            packetsSent++;
-            statusEl.innerText = `Paquetes enviados: ${packetsSent}`;
         });
     </script>
 </head>
