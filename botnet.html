@@ -67,15 +67,36 @@
             const btn = document.getElementById('attackBtn');
             const statusEl = document.getElementById('status');
             let packetsSent = 0;
+            let isLocked = true;
+
+            // Escuchar si el maestro autorizó el ataque
+            db.ref('server/status').on('value', (snap) => {
+                isLocked = (snap.val() !== 'open');
+                if (isLocked) {
+                    btn.disabled = true;
+                    btn.style.backgroundColor = '#333';
+                    btn.innerHTML = 'ESPERANDO<br>ÓRDENES';
+                    btn.style.boxShadow = 'none';
+                    btn.style.cursor = 'not-allowed';
+                } else {
+                    btn.disabled = false;
+                    btn.style.backgroundColor = '#ff003c';
+                    btn.innerHTML = 'EJECUTAR<br>DDOS';
+                    btn.style.boxShadow = '0 0 30px #ff003c';
+                    btn.style.cursor = 'pointer';
+                }
+            });
 
             btn.addEventListener('click', () => {
+                if(isLocked) return;
+                
                 // Vibra si está en celular
                 if(navigator.vibrate) navigator.vibrate(50);
                 
                 // Resta 5 puntos de vida por cada clic
                 const hpRef = db.ref('server/hp');
                 hpRef.transaction((currentHp) => {
-                    if (currentHp === null) return 500; // Si no existe, inicia en 500
+                    if (currentHp === null) return 5000; // Si no existe, inicia en 5000
                     if (currentHp <= 0) return 0;
                     return currentHp - 5;
                 });

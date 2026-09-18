@@ -8,10 +8,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-red: #ff003c;
+            --neon-green: #39ff14;
+            --bg-color: #050505;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
-            background-color: #050505;
-            color: #00ffcc;
-            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg-color);
+            color: var(--neon-blue);
+            font-family: 'Share Tech Mono', monospace;
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -20,78 +31,167 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
-            transition: background-color 0.5s;
+            transition: background-color 0.8s ease;
         }
-        .container {
-            background: rgba(0,0,0,0.8);
-            padding: 40px;
-            border: 4px solid white;
-            border-radius: 10px;
-            width: 80%;
-            max-width: 800px;
-            z-index: 10;
-        }
-        h1 {
-            color: white;
-            font-size: 3.5em;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px black;
-            letter-spacing: 5px;
-        }
-        h3 {
-            color: #00ffcc;
-            font-size: 1.5em;
-            margin: 0 0 20px 0;
-        }
-        .hp-container {
-            width: 100%;
-            height: 60px;
-            background: #333;
-            border: 3px solid white;
-            position: relative;
-        }
-        #server-hp-bar {
-            width: 100%;
-            height: 100%;
-            background: #27c93f;
-            transition: width 0.1s, background-color 0.3s;
-        }
-        #server-hp-text {
+
+        /* Rejilla Cibernética de Fondo */
+        body::before {
+            content: "";
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            line-height: 60px;
-            text-align: center;
-            color: white;
-            font-weight: bold;
-            font-size: 2em;
-            text-shadow: 1px 1px 5px black;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: 
+                linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 0;
+            pointer-events: none;
         }
-        #server-status-msg {
-            color: white;
-            margin-top: 30px;
-            font-size: 1.8em;
-            text-shadow: 0 0 10px black;
-            font-weight: bold;
-        }
+
         .matrix-bg {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; opacity: 0.15; pointer-events: none;
         }
-        .btn-reset {
-            margin-top: 30px;
-            background: transparent;
-            border: 1px dashed #00ffcc;
-            color: #00ffcc;
-            padding: 10px 20px;
-            cursor: pointer;
+
+        .hud-wrapper {
+            position: relative;
             z-index: 10;
+            width: 85%;
+            max-width: 1000px;
+            padding: 40px;
+            background: rgba(0, 10, 15, 0.8);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
+            backdrop-filter: blur(5px);
         }
-        .btn-reset:hover { background: #00ffcc; color: black; }
+
+        /* Efectos en las esquinas */
+        .hud-wrapper::before, .hud-wrapper::after {
+            content: ""; position: absolute; width: 40px; height: 40px; border: 4px solid var(--neon-blue);
+        }
+        .hud-wrapper::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .hud-wrapper::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        .logo-unab {
+            width: 250px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+            transition: filter 0.3s;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3.5em;
+            margin: 0 0 20px 0;
+            text-shadow: 0 0 15px rgba(255,255,255,0.8);
+            letter-spacing: 4px;
+        }
+
+        h3 {
+            color: var(--neon-blue);
+            font-size: 1.5em;
+            margin: 0 0 20px 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hp-container {
+            width: 100%;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid var(--neon-blue);
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px black;
+        }
+
+        #server-hp-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--neon-green);
+            box-shadow: 0 0 15px var(--neon-green);
+            transition: width 0.1s linear, background-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        #server-hp-text {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            line-height: 50px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px black;
+            z-index: 2;
+        }
+
+        #server-status-msg {
+            color: var(--neon-blue);
+            font-size: 1.8em;
+            margin-top: 15px;
+            text-shadow: 0 0 10px var(--neon-blue);
+            min-height: 40px;
+        }
+
+        .controls {
+            margin-top: 40px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn {
+            background: rgba(0,0,0,0.5);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1.2em;
+            padding: 15px 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-control {
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0,243,255,0.3);
+        }
+
+        .btn-control:hover {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .btn-reset {
+            border: 1px dashed #777;
+            color: #aaa;
+        }
+
+        .btn-reset:hover {
+            border-color: white;
+            color: white;
+        }
+
+        /* Clases Dinámicas */
+        .danger-mode {
+            animation: pulse-danger 1.5s infinite;
+        }
+
+        @keyframes pulse-danger {
+            0% { box-shadow: 0 0 20px rgba(255, 0, 60, 0.2), inset 0 0 30px rgba(255, 0, 60, 0.1); border-color: var(--neon-red); }
+            50% { box-shadow: 0 0 50px rgba(255, 0, 60, 0.6), inset 0 0 50px rgba(255, 0, 60, 0.3); border-color: white; }
+            100% { box-shadow: 0 0 20px rgba(255, 0, 60, 0.2), inset 0 0 30px rgba(255, 0, 60, 0.1); border-color: var(--neon-red); }
+        }
+
+        .critical-text { animation: glitch-color 0.2s infinite; }
+        
+        @keyframes glitch-color {
+            0% { color: white; transform: translate(1px, 1px); }
+            50% { color: var(--neon-red); transform: translate(-1px, -1px); }
+            100% { color: white; transform: translate(0px, 0px); }
+        }
     </style>
 
     <!-- Firebase SDKs Compat -->
@@ -101,32 +201,37 @@
 <body>
     <div class="matrix-bg" id="matrix"></div>
     
-    <h1 id="title-msg">¡ATAQUE DDOS DETECTADO!</h1>
-    
-    <div class="container">
-        <h3>ESTADO DEL SERVIDOR CENTRAL UNAB</h3>
+    <div class="hud-wrapper" id="main-hud">
+        <img src="logo-unab.png" alt="UNAB" class="logo-unab" id="unab-logo">
+        <h1 id="title-msg">MONITOREO DE RED UNAB</h1>
+        
+        <h3><i class="fas fa-server"></i> NODO CENTRAL: ONLINE</h3>
         
         <div class="hp-container">
             <div id="server-hp-bar"></div>
-            <div id="server-hp-text">HP: 500/500</div>
+            <div id="server-hp-text">INTEGRIDAD: 5000/5000</div>
+        </div>
+
+        <div id="server-status-msg">
+            <i class="fas fa-shield-alt"></i> Firewalls activados. Tráfico normal.
         </div>
     </div>
-    
-    <p id="server-status-msg">
-        <i class="fas fa-satellite-dish fa-spin"></i> Recibiendo paquetes de la Botnet...
-    </p>
 
-    <button class="btn-reset" onclick="resetServer()">Reinciar Servidor (Admin)</button>
+    <div class="controls">
+        <button class="btn btn-control" id="btn-toggle" onclick="toggleAttack()">
+            <i class="fas fa-unlock-alt"></i> Autorizar Ataque
+        </button>
+        <button class="btn btn-reset" onclick="resetServer()">
+            <i class="fas fa-sync-alt"></i> Reiniciar
+        </button>
+    </div>
 
     <script>
         // Matrix effect
         const canvas = document.createElement('canvas');
         document.getElementById('matrix').appendChild(canvas);
         const ctx = canvas.getContext('2d');
-        function resize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resize);
         resize();
         const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*'.split('');
@@ -135,7 +240,7 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#ff003c';
-            ctx.font = '15px Courier';
+            ctx.font = '15px Share Tech Mono';
             drops.forEach((y, i) => {
                 ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * 20, y * 20);
                 if (y * 20 > canvas.height && Math.random() > 0.95) drops[i] = 0;
@@ -155,51 +260,99 @@
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        const maxHp = 500;
+        const maxHp = 5000;
 
         const hpBar = document.getElementById('server-hp-bar');
         const hpText = document.getElementById('server-hp-text');
         const statusMsg = document.getElementById('server-status-msg');
         const titleMsg = document.getElementById('title-msg');
+        const btnToggle = document.getElementById('btn-toggle');
+        const mainHud = document.getElementById('main-hud');
+        const unabLogo = document.getElementById('unab-logo');
+        
+        let isLocked = true;
 
-        // Reset
+        window.toggleAttack = function() {
+            isLocked = !isLocked;
+            db.ref('server/status').set(isLocked ? 'locked' : 'open');
+        };
+
         window.resetServer = function() {
             db.ref('server/hp').set(maxHp);
+            db.ref('server/status').set('locked');
         };
+
+        // Escuchar estado Lock/Unlock
+        db.ref('server/status').on('value', (snapshot) => {
+            const status = snapshot.val() || 'locked';
+            isLocked = (status === 'locked');
+            if(isLocked) {
+                btnToggle.innerHTML = '<i class="fas fa-unlock-alt"></i> Autorizar Ataque';
+                btnToggle.style.backgroundColor = "rgba(0,0,0,0.5)";
+                btnToggle.style.borderColor = "var(--neon-blue)";
+                btnToggle.style.color = "var(--neon-blue)";
+            } else {
+                btnToggle.innerHTML = '<i class="fas fa-lock"></i> Bloquear Ataque';
+                btnToggle.style.backgroundColor = "var(--neon-red)";
+                btnToggle.style.borderColor = "var(--neon-red)";
+                btnToggle.style.color = "white";
+                btnToggle.style.boxShadow = "0 0 20px var(--neon-red)";
+            }
+        });
 
         // Escuchar salud en tiempo real
         db.ref('server/hp').on('value', (snapshot) => {
             const currentHp = snapshot.val() !== null ? snapshot.val() : maxHp;
-            
             let percent = (currentHp / maxHp) * 100;
             if(percent < 0) percent = 0;
             
             hpBar.style.width = percent + '%';
-            hpText.innerText = `HP: ${currentHp}/${maxHp}`;
+            hpText.innerText = `INTEGRIDAD: ${currentHp} / ${maxHp}`;
             
+            // Colores y Alertas
             if(percent > 50) {
-                hpBar.style.backgroundColor = '#27c93f'; // Verde
+                hpBar.style.backgroundColor = 'var(--neon-green)';
+                hpBar.style.boxShadow = '0 0 15px var(--neon-green)';
+                mainHud.classList.remove('danger-mode');
+                titleMsg.classList.remove('critical-text');
+                unabLogo.style.filter = "drop-shadow(0 0 10px rgba(255, 255, 255, 0.5))";
             } else if(percent > 20) {
                 hpBar.style.backgroundColor = '#ffaa00'; // Naranja
+                hpBar.style.boxShadow = '0 0 15px #ffaa00';
+                mainHud.classList.add('danger-mode');
+                unabLogo.style.filter = "drop-shadow(0 0 10px rgba(255, 170, 0, 0.8)) sepia(1) hue-rotate(0deg) saturate(3)";
             } else {
-                hpBar.style.backgroundColor = '#ff003c'; // Rojo
+                hpBar.style.backgroundColor = 'var(--neon-red)';
+                hpBar.style.boxShadow = '0 0 20px var(--neon-red)';
+                mainHud.classList.add('danger-mode');
+                unabLogo.style.filter = "drop-shadow(0 0 20px rgba(255, 0, 60, 1)) sepia(1) hue-rotate(300deg) saturate(5)";
             }
             
+            // Textos
             if(currentHp <= 0) {
-                titleMsg.innerHTML = '❌ ERROR 500 ❌';
-                titleMsg.style.color = '#ff003c';
-                statusMsg.innerHTML = 'SISTEMA COLAPSADO POR DENEGACIÓN DE SERVICIO';
-                statusMsg.style.color = '#ff003c';
+                titleMsg.innerHTML = '❌ SISTEMA VULNERADO ❌';
+                titleMsg.classList.add('critical-text');
+                statusMsg.innerHTML = 'BOTNET EN CONTROL TOTAL. SERVICIOS CAÍDOS.';
+                statusMsg.style.color = 'var(--neon-red)';
                 document.body.style.backgroundColor = '#1a0000';
+                hpBar.style.backgroundColor = 'transparent';
+                hpText.innerText = 'INTEGRIDAD: COMPROMETIDA';
             } else {
-                titleMsg.innerHTML = '¡ATAQUE DDOS DETECTADO!';
-                titleMsg.style.color = 'white';
-                statusMsg.innerHTML = '<i class="fas fa-satellite-dish fa-spin"></i> Recibiendo paquetes de la Botnet...';
-                statusMsg.style.color = 'white';
-                document.body.style.backgroundColor = percent < 20 ? '#330000' : '#050505';
+                if(isLocked) {
+                    titleMsg.innerHTML = 'MONITOREO DE RED UNAB';
+                    titleMsg.classList.remove('critical-text');
+                    statusMsg.innerHTML = '<i class="fas fa-shield-alt"></i> Firewalls activados. Tráfico normal.';
+                    statusMsg.style.color = 'var(--neon-blue)';
+                    document.body.style.backgroundColor = 'var(--bg-color)';
+                } else {
+                    titleMsg.innerHTML = '¡ATAQUE DDOS DETECTADO!';
+                    if(percent < 20) titleMsg.classList.add('critical-text');
+                    statusMsg.innerHTML = '<i class="fas fa-satellite-dish fa-spin"></i> Recibiendo paquetes maliciosos masivos...';
+                    statusMsg.style.color = 'var(--neon-red)';
+                    document.body.style.backgroundColor = percent < 20 ? '#330000' : 'var(--bg-color)';
+                }
             }
         });
     </script>
 </body>
 </html>
-
